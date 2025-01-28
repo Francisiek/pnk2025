@@ -6,6 +6,7 @@ RUN chown node:node ./ -R
 USER node
 RUN npm install
 RUN npm install vite
+RUN npm install tsx
 RUN npx vite build --base=/
 EXPOSE 3000
-CMD node server.cjs
+CMD npx tsx index.ts

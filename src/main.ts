@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
     bootstrapCameraKit,
     CameraKit,
@@ -7,9 +8,8 @@ import {
     Lens,
 } from "@snap/camera-kit";
 
-const stagingApiToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzM3MDI3NTM5LCJzdWIiOiIxZmRkOTk3YS1mYWQxLTQ1NWMtYTZlMC01YjBhMWFhY2Y1OTJ-U1RBR0lOR341ZjYzMTBlMC02ZjA0LTRiODktYjBlMy1iNzBlZDJhMWRlNjkifQ.GdDRI9-h-ngDmv-USkGua6N7XHkoX4l3_sZh25iqljc";
-// const productionApiToken = "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzM3MDI3NTM5LCJzdWIiOiIxZmRkOTk3YS1mYWQxLTQ1NWMtYTZlMC01YjBhMWFhY2Y1OTJ-UFJPRFVDVElPTn5mNWUyNTNiMi1kYThkLTQ2NjAtYTIzNi1iMjYyN2E2YmEwZGEifQ.7biXt8bEEztPeki_RT186Cefoniottqf7zlWBbyAUjg";
-const lensGroupRepository = "175ec1af-c31f-4346-b47a-78d6c75d4424";
+const stagingApiToken = import.meta.env.VITE_STAGING_API_KEY;
+const lensGroupRepository = import.meta.env.VITE_LENS_GROUP;
 
 // cameraKit
 var isInitialized: boolean = false;
@@ -40,7 +40,7 @@ function setLenses(l: Lens[]) {
 async function init(): Promise<void> {
     if (isInitialized) return;
     isInitialized = true;
-
+    console.log(import.meta.env);
     // initialize cameraKit and get lenses
     cameraKit = await bootstrapCameraKit({apiToken: stagingApiToken, logLevel: "debug", logger: "console"});
     session = await cameraKit.createSession();
