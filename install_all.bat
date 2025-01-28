@@ -4,5 +4,3 @@ net localgroup docker-users <user> /add
 
 curl.exe https://github.com/Francisiek/pnk2025/archive/refs/heads/main.zip
 tar.exe -xf main.zip
-cd pnk2025-main
-docker compose up --build
