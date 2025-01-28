@@ -22,4 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-pnk_syl pnk_syl.pub
+pnk_sy*
+
