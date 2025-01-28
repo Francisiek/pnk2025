@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PNK snap</title>
+  <link rel="stylesheet" href="sstyle.css" type="text/css" />
+</head>
+<body>
+<div id="root" style="display: flex;
+    flex-direction: column;
+    align-items: center;">
+  <div id="original_div" style="position: absolute;
+  overflow: hidden;"></div>
+  <div id="snap_div" style="position: absolute;
+    overflow: hidden;
+    right: 50%;">
+    <div id="initialize">Initializing...</div>
+  </div>
+</div>
+<div>
+  <select id="selection" name="lenses" required>
+    <option value="initializing">Initializing...</option>
+  </select>
+  <select id="side" required>
+    <option value="left">Left</option>
+    <option value="right">Right</option>
+  </select>
+  <button id="popup">Initializing...</button>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

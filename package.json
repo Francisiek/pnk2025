@@ -1,0 +1,28 @@
+{
+  "name": "pnk",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "prettier": "^3.3.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.4.14"
+  },
+  "main": "server.cjs",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@snap/camera-kit": "^1.1.0",
+    "@snap/push2web": "^1.1.0",
+    "@zoom/videosdk": "^2.1.5",
+    "express": "^4.21.2",
+    "http-server": "^14.1.1"
+  }
+}
