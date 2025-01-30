@@ -122,12 +122,14 @@ async function init(): Promise<void> {
     snap_div.style.setProperty("position", "absolute");
     snap_div.style.setProperty("overflow", "hidden");
 
-    set_left();
-
     // initialize camera
     mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
-    camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
-    camera_height = mediaSource.getVideoTracks()[0].getSettings().height as Number;
+    // camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
+    // camera_height = mediaSource.getVideoTracks()[0].getSettings().height as Number;
+    camera_width = 1920;
+    camera_height = 1080;
+
+    set_left();
 
     // initialize divs to full
     root_div.appendChild(original_div);
@@ -170,7 +172,7 @@ async function init(): Promise<void> {
                 e.preventDefault();
                 e.returnValue = true;
                 popup_button.textContent = "Open popup";
-            })
+            });
         }
         else {
             popup_window.close();

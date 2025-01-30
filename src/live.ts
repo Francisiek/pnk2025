@@ -104,7 +104,9 @@ async function init(): Promise<void> {
 
     // initialize camera
     mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
-    camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
+    // camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
+
+    camera_width = 1920;
 
     if (window.localStorage.getItem("side") == "left")
         set_left();
@@ -135,6 +137,11 @@ async function init(): Promise<void> {
             applyLens(e.newValue);
         }
     });
+
+        window.addEventListener("beforeunload", (e) => {
+            e.preventDefault();
+            e.returnValue = true;
+    })
 
     // finish
     document.getElementById("initialize")!.innerHTML = "";

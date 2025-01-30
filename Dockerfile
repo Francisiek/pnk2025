@@ -9,4 +9,4 @@ RUN npm install vite
 RUN npm install tsx
 RUN npx vite build --base=/
 EXPOSE 3000
-CMD npx tsx index.ts
+ENTRYPOINT npx tsx index.ts
