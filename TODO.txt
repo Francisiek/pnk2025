@@ -1,6 +1,4 @@
-
-- cały ekran nie tylko połowa
-- proporcje elementu renderingu do wymiaru kamery
-- proporcje okna dopasowane do renderingu
+- bez podglądu
+- zapobieganie odświeżenia renderu
 - wywalić logo wodne
 - ochrona przed odświeżeniem strony

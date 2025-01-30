@@ -5,7 +5,7 @@ import {
     CameraKitSession,
     CameraKitSource,
     createMediaStreamSource,
-    Lens,
+    Lens, Transform2D,
 } from "@snap/camera-kit";
 
 const stagingApiToken = import.meta.env.VITE_STAGING_API_KEY;
@@ -97,7 +97,7 @@ async function init(): Promise<void> {
     session = await cameraKit.createSession();
     var { lenses } = await cameraKit.lensRepository.loadLensGroups([lensGroupRepository]);
     setLenses(lenses);
-    await cameraKit.lensRepository.cacheLensContent(lenses);
+    // await cameraKit.lensRepository.cacheLensContent(lenses);
 
     // initialize selection and button
     selection = document.getElementById("selection") as HTMLSelectElement;
@@ -109,49 +109,53 @@ async function init(): Promise<void> {
     popup_button = document.getElementById("popup") as HTMLButtonElement;
 
     // initalize canvases for left side
-    root_div = document.getElementById("root") as HTMLDivElement;
-    original_div = document.createElement("div") as HTMLDivElement;
-    original_div.setAttribute("id", "original_div");
-    snap_div = document.createElement("div") as HTMLDivElement;
-    snap_div.setAttribute("id", "snap_div");
-    original_video = document.createElement("video") as HTMLVideoElement;
-
-    original_div.style.setProperty("position", "absolute");
-    original_div.style.setProperty("overflow", "hidden");
-
-    snap_div.style.setProperty("position", "absolute");
-    snap_div.style.setProperty("overflow", "hidden");
+    // root_div = document.getElementById("root") as HTMLDivElement;
+    // original_div = document.createElement("div") as HTMLDivElement;
+    // original_div.setAttribute("id", "original_div");
+    // snap_div = document.createElement("div") as HTMLDivElement;
+    // snap_div.setAttribute("id", "snap_div");
+    // original_video = document.createElement("video") as HTMLVideoElement;
+    //
+    // original_div.style.setProperty("position", "absolute");
+    // original_div.style.setProperty("overflow", "hidden");
+    //
+    // snap_div.style.setProperty("position", "absolute");
+    // snap_div.style.setProperty("overflow", "hidden");
 
     // initialize camera
-    mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
+    // mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
+    // camera_width = 1920;
+    // camera_height = 1080;
+
+    // await mediaSource.getVideoTracks()[0].applyConstraints({width: camera_width, height: camera_height, resizeMode: "crop-and-scale"});
     // camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
     // camera_height = mediaSource.getVideoTracks()[0].getSettings().height as Number;
-    camera_width = 1920;
-    camera_height = 1080;
-
-    set_left();
+    //
+    // console.log(camera_width);
+    // console.log(camera_height);
+    //
+    // set_left();
 
     // initialize divs to full
-    root_div.appendChild(original_div);
-    root_div.appendChild(snap_div);
-
-    original_div.appendChild(original_video);
-    original_video.srcObject = mediaSource;
-    original_video.autoplay = true;
+    // root_div.appendChild(original_div);
+    // root_div.appendChild(snap_div);
+    //
+    // original_div.appendChild(original_video);
+    // original_video.srcObject = mediaSource;
+    // original_video.autoplay = true;
 
     // initialize stream
-    snap_div.appendChild(session.output.live);
+    // snap_div.appendChild(session.output.live);
 
     // apply to session
-    snapSource = createMediaStreamSource(mediaSource);
-    session.setSource(snapSource);
-    session.applyLens(lenses[0]);
-    session.play("live");
+    // snapSource = createMediaStreamSource(mediaSource);
+    // session.setSource(snapSource);
+    // session.applyLens(lenses[0]);
+    // session.play("live");
 
     // set storage for live
     window.localStorage.setItem("side", "left");
     window.localStorage.setItem("lens", lenses[0].id);
-    window.localStorage.setItem("initialized", "true");
 
     // events
     selection!.addEventListener("change", (event) => {
@@ -162,32 +166,32 @@ async function init(): Promise<void> {
         changeSide(event.target.value);
     });
 
-    document.getElementById("popup")!.addEventListener("click", (e) => {
-        if (popup_window === undefined || popup_window.closed == true) {
-            popup_window = window.open("http://localhost:3000/live.html", "popup",
-                "popup=true width=" + camera_width.toString() + " height=" + camera_height.toString()) as WindowProxy;
-            popup_button.textContent = "Close popup";
+    // document.getElementById("popup")!.addEventListener("click", (e) => {
+    //     if (popup_window === undefined || popup_window.closed == true) {
+    //         popup_window = window.open("http://localhost:3000/live.html", "popup",
+    //             "popup=true width=" + camera_width.toString() + " height=" + camera_height.toString()) as WindowProxy;
+    //         popup_button.textContent = "Close popup";
+    //
+    //         // popup_window.addEventListener("beforeunload", (e) => {
+    //         //     e.preventDefault();
+    //         //     e.returnValue = true;
+    //         // });
+    //     }
+    //     else {
+    //         popup_window.close();
+    //         popup_button.textContent = "Open popup";
+    //     }
+    // });
 
-            popup_window.addEventListener("beforeunload", (e) => {
-                e.preventDefault();
-                e.returnValue = true;
-                popup_button.textContent = "Open popup";
-            });
-        }
-        else {
-            popup_window.close();
-            popup_button.textContent = "Open popup";
-        }
-    });
-
-    window.addEventListener("beforeunload", (e) => {
-        e.preventDefault();
-        e.returnValue = true;
-    })
+    // window.addEventListener("beforeunload", (e) => {
+    //     e.preventDefault();
+    //     e.returnValue = true;
+    // });
 
     // finish
-    document.getElementById("initialize")!.innerHTML = "";
-    popup_button.textContent = "Open popup";
+    document.getElementById("initialize")!.innerHTML = "<a href=\"http://localhost:3000/live.html\" target=\"_blank\">Live</a>";
+    window.localStorage.setItem("initialized", "true");
+    // popup_button.textContent = "Open popup";
 }
 
 async function applyLens(id): Promise<void> {
@@ -201,11 +205,14 @@ async function applyLens(id): Promise<void> {
 
 async function changeSide(side): Promise<void> {
     if (side == "left") {
-        set_left();
+        // set_left();
+        window.localStorage.setItem("side", "left");
     } else if (side == "right") {
-        set_right();
+        // set_right();
+        window.localStorage.setItem("side", "right");
     } else {
-        set_full();
+        // set_full();
+        window.localStorage.setItem("side", "full");
     }
 }
 

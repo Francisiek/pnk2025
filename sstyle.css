@@ -1,2 +1,14 @@
 
+#root {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 10px;
+    font-family: monospace;
+    font-size: 32px;
+    justify-content: flex-start;
+}
 
+select {
+    font-size: 26px;
+}

@@ -20,6 +20,7 @@ var lenses: Lens[] = [];
 // camera
 var mediaSource: MediaStream;
 var camera_width: Number = 0;
+var camera_height: Number = 0;
 var snapSource: CameraKitSource;
 
 // HTML elements
@@ -77,6 +78,14 @@ function set_full() {
     snap_div.style.setProperty("width", camera_width.toString()+"px");
 }
 
+async function applyLens(id: string): Promise<void> {
+    if (session != null) {
+        await session.applyLens(lenses.find(
+            (element: Lens, index: number, obj) => element.id == id) as Lens
+        )
+    }
+}
+
 async function init(): Promise<void> {
     if (isInitialized) return;
     isInitialized = true;
@@ -104,9 +113,12 @@ async function init(): Promise<void> {
 
     // initialize camera
     mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
-    // camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
-
     camera_width = 1920;
+    camera_height = 1080;
+
+    await mediaSource.getVideoTracks()[0].applyConstraints({width: camera_width, height: camera_height, resizeMode: "crop-and-scale"});
+    camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
+    camera_height = mediaSource.getVideoTracks()[0].getSettings().height as Number;
 
     if (window.localStorage.getItem("side") == "left")
         set_left();
@@ -126,7 +138,7 @@ async function init(): Promise<void> {
     // apply to session
     snapSource = createMediaStreamSource(mediaSource);
     session.setSource(snapSource);
-    session.applyLens(lenses[0]);
+    await applyLens(window.localStorage.getItem("lens"));
     session.play("live");
 
     // events
@@ -138,21 +150,14 @@ async function init(): Promise<void> {
         }
     });
 
-        window.addEventListener("beforeunload", (e) => {
-            e.preventDefault();
-            e.returnValue = true;
-    })
+    window.alert("Kliknij raz w stronę!");
+
+    window.addEventListener("beforeunload", (e) => {
+        e.preventDefault();
+    });
 
     // finish
     document.getElementById("initialize")!.innerHTML = "";
-}
-
-async function applyLens(id: string): Promise<void> {
-    if (session != null) {
-        await session.applyLens(lenses.find(
-            (element: Lens, index: number, obj) => element.id == id) as Lens
-        )
-    }
 }
 
 async function changeSide(side: string): Promise<void> {
@@ -169,5 +174,3 @@ while (window.localStorage.getItem("initialized") != "true")
     ;
 
 init();
-
-
