@@ -33,6 +33,50 @@ function setLenses(l: Lens[]) {
     lenses = l;
 }
 
+function set_left() {
+    try {
+        root_div.removeChild(snap_div);
+    } catch (e) {}
+
+    root_div.appendChild(original_div);
+    root_div.appendChild(snap_div);
+
+    snap_div.style.setProperty("right", "50%");
+    snap_div.style.setProperty("width", (camera_width/2).toString()+"px");
+
+    original_div.style.removeProperty("width");
+    original_div.style.removeProperty("right");
+}
+
+function set_right() {
+    try {
+        root_div.removeChild(snap_div);
+        root_div.removeChild(original_div);
+    } catch (e) {}
+
+    root_div.appendChild(snap_div);
+    root_div.appendChild(original_div);
+
+    original_div.style.setProperty("right", "50%");
+    original_div.style.setProperty("width", (camera_width/2).toString()+"px");
+    original_video.srcObject = mediaSource;
+    original_video.autoplay = true;
+
+    snap_div.style.removeProperty("right");
+    snap_div.style.removeProperty("width");
+}
+
+function set_full() {
+    try {
+        root_div.removeChild(snap_div);
+    } catch (e) {}
+
+    root_div.appendChild(snap_div);
+
+    snap_div.style.removeProperty("right");
+    snap_div.style.setProperty("width", camera_width.toString()+"px");
+}
+
 async function init(): Promise<void> {
     if (isInitialized) return;
     isInitialized = true;
@@ -46,13 +90,28 @@ async function init(): Promise<void> {
 
     // initalize canvases for left side
     root_div = document.getElementById("root") as HTMLDivElement;
-    original_div = document.getElementById("original_div") as HTMLDivElement;
-    snap_div = document.getElementById("snap_div") as HTMLDivElement;
+    original_div = document.createElement("div") as HTMLDivElement;
+    original_div.setAttribute("id", "original_div");
+    snap_div = document.createElement("div") as HTMLDivElement;
+    snap_div.setAttribute("id", "snap_div");
     original_video = document.createElement("video") as HTMLVideoElement;
+
+    original_div.style.setProperty("position", "absolute");
+    original_div.style.setProperty("overflow", "hidden");
+
+    snap_div.style.setProperty("position", "absolute");
+    snap_div.style.setProperty("overflow", "hidden");
 
     // initialize camera
     mediaSource = await navigator.mediaDevices.getUserMedia({ video: true });
     camera_width = mediaSource.getVideoTracks()[0].getSettings().width as Number;
+
+    if (window.localStorage.getItem("side") == "left")
+        set_left();
+    else if (window.localStorage.getItem("side") == "right")
+        set_right();
+    else if (window.localStorage.getItem("side") == "full")
+        set_full();
 
     // initialize original capture
     original_div.appendChild(original_video);
@@ -61,16 +120,12 @@ async function init(): Promise<void> {
 
     // initialize stream
     snap_div.appendChild(session.output.live);
-    snap_div.style.setProperty("width", (Number(camera_width)/2).toString()+"px");
 
     // apply to session
     snapSource = createMediaStreamSource(mediaSource);
     session.setSource(snapSource);
     session.applyLens(lenses[0]);
     session.play("live");
-
-    // finish
-    document.getElementById("initialize")!.innerHTML = "";
 
     // events
     window.addEventListener("storage", (e) => {
@@ -81,7 +136,8 @@ async function init(): Promise<void> {
         }
     });
 
-
+    // finish
+    document.getElementById("initialize")!.innerHTML = "";
 }
 
 async function applyLens(id: string): Promise<void> {
@@ -94,19 +150,11 @@ async function applyLens(id: string): Promise<void> {
 
 async function changeSide(side: string): Promise<void> {
     if (side == "left") {
-        var snap_div_copy = root_div.removeChild(snap_div);
-        root_div.appendChild(snap_div_copy);
-        original_div.style.removeProperty("width");
-        original_div.style.removeProperty("right");
-        snap_div_copy.style.setProperty("width", (camera_width/2).toString()+"px");
-        snap_div_copy.style.setProperty("right", "50%");
+        set_left();
+    } else if (side == "right") {
+        set_right();
     } else {
-        var original_div_copy = root_div.removeChild(original_div);
-        root_div.appendChild(original_div_copy);
-        snap_div.style.removeProperty("width");
-        snap_div.style.removeProperty("right");
-        original_div_copy.style.setProperty("width", (camera_width/2).toString()+"px");
-        original_div_copy.style.setProperty("right", "50%");
+        set_full();
     }
 }
 
